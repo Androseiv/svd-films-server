@@ -2,7 +2,6 @@ const db = require('../db/index')
 const bcrypt = require('bcrypt');
 const MailService = require('./mail-service')
 const TokenService = require('./token-service')
-const UserDto = require('../dtos/user-dto')
 const uuid = require('uuid')
 const ApiError = require('../exceptions/api-error')
 
@@ -15,13 +14,9 @@ class UserService {
     const hashPassword = await bcrypt.hash(password, 3);
     const activationLink = uuid.v4();
 
-    const newUser = await db.query(`INSERT INTO "user"(email, username, password, isActivated, activationLink) VALUES ('${email}', '${email}', '${hashPassword}', false, '${activationLink}') RETURNING *`);
+    const newUser = (await db.query(`INSERT INTO "user"(email, username, password, isActivated, activationLink) VALUES ('${email}', '${email}', '${hashPassword}', false, '${activationLink}') RETURNING *`))[0];
     await MailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
-
-    const userDto = new UserDto(newUser[0]);
-    const tokens = TokenService.generateTokens({...userDto});
-    await TokenService.saveToken(userDto.id, tokens.refreshToken);
-    return {...tokens, user: userDto};
+    return TokenService.generateAndSaveTokens(newUser)
   }
 
   async login(email, password) {
@@ -33,11 +28,7 @@ class UserService {
     if(!isPassEquals){
       throw ApiError.BadRequest('Incorrect password');
     }
-    const userDto = new UserDto(user);
-    const tokens = TokenService.generateTokens({...userDto});
-
-    await TokenService.saveToken(userDto.id, tokens.refreshToken);
-    return {...tokens, user: userDto};
+    return TokenService.generateAndSaveTokens(user)
   }
 
   async logout(refreshToken) {
@@ -53,9 +44,23 @@ class UserService {
     return user;
   }
 
-  async getUsers() {
-    return await db.query('SELECT * from "user"');
+  async refresh(refreshToken) {
+    if(!refreshToken) {
+      throw ApiError.UnauthorizedError();
+    }
+    const userData = TokenService.validateRefreshToken(refreshToken);
+    const tokenFromDb = await TokenService.findToken(refreshToken);
+    if(!userData || !tokenFromDb) {
+      throw ApiError.UnauthorizedError();
+    }
+    const user = (await db.query(`SELECT * FROM "user" WHERE id = ${userData.id}`))[0];
+    return TokenService.generateAndSaveTokens(user)
   }
+
+  async getUserIdByToken(refreshToken) {
+    return (await db.query(`SELECT user_id FROM token WHERE refreshtoken = '${refreshToken}'`))[0].user_id
+  }
+
 }
 
 module.exports = new UserService();

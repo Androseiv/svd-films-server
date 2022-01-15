@@ -52,79 +52,10 @@ class UserController {
 
   async refresh(req, res, next) {
     try {
-
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async getRated(req, res, next) {
-    try {
-
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async addRated(req, res, next) {
-    try {
-
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async removeRated(req, res, next) {
-    try {
-
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async getFavourite(req, res, next) {
-    try {
-
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async addFavourite(req, res, next) {
-    try {
-
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async removeFavourite(req, res, next) {
-    try {
-
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async getLater(req, res, next) {
-    try {
-
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async addLater(req, res, next) {
-    try {
-
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async removeLater(req, res, next) {
-    try {
-
+      const {refreshToken} = req.cookies;
+      const userData = await UserService.refresh(refreshToken)
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
+      return res.json(userData);
     } catch (err) {
       next(err);
     }
