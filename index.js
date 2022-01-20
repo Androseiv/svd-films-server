@@ -22,7 +22,7 @@ app.use(errorMiddleware)
 
 const start = async () => {
   try {
-    app.listen(PORT, () => console.log(`SERVER STARTED ON PORT ${process.env.PORT}`))
+    app.listen(PORT, () => console.log(`SERVER STARTED ON PORT ${process.env.CLIENT_URL}`))
   } catch (err) {
     console.log(err)
   }
