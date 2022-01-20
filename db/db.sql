@@ -20,11 +20,6 @@ create table token
     refreshToken varchar(255)
 );
 
-drop table rated_film;
-drop table favourite_film;
-drop table later_film;
-drop table user_photo;
-
 create table rated_film
 (
     id      integer,
