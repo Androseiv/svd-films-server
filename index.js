@@ -6,7 +6,7 @@ const router = require('./router/index.js')
 const errorMiddleware = require('./middlewares/error-middleware')
 const fileUpload = require('express-fileupload')
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 const app = express();
 
 app.use(fileUpload({}))
