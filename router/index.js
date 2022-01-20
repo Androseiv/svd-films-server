@@ -11,6 +11,13 @@ router.post('/registration',
   body('password').isLength({min: 5, max: 32}),
   UserController.registration
 );
+router.post('/username/change',
+  authMiddleware,
+  body('username').isLength({min: 3, max: 32}),
+  UserController.changeUsername
+);
+router.post('/image/change', UserController.changeUserImage);
+
 router.post('/login', UserController.login);
 router.post('/logout', UserController.logout);
 router.get('/activate/:link', UserController.activate);
@@ -28,6 +35,7 @@ router.get('/:userId/films/rated', FilmController.getRatedFilms);
 router.post('/films/rated/add', authMiddleware, FilmController.addRatedFilm);
 router.post('/films/rated/remove', authMiddleware, FilmController.removeRatedFilm);
 
-router.get('/info/:filmId', authMiddleware, FilmController.userFilm);
+router.get('/info/film/:filmId', authMiddleware, FilmController.userFilm);
+router.get('/info/user/:userId', UserController.getUserInfo);
 
 module.exports = router;

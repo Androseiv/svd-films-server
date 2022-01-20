@@ -8,20 +8,20 @@ class FilmService {
       throw ApiError.BadRequest('Invalid incoming data');
     }
     const offset = limit !== 'ALL' ? (page - 1) * limit : page-1;
-    return (await db.query(`SELECT * FROM favourite_film WHERE user_id = '${userId}' LIMIT ${limit} OFFSET '${offset}'`));
+    return (await db.query(`SELECT id, title, time FROM favourite_film WHERE user_id = '${userId}' LIMIT ${limit} OFFSET '${offset}'`));
   }
 
-  async addFavouriteFilm(filmId, refreshToken) {
-    const userId = await UserService.getUserIdByToken(refreshToken);
+  async addFavouriteFilm(filmId, refreshToken, filmTitle) {
+    const userId = (await UserService.getUserByToken(refreshToken)).user_id;
     const film = await this.isFilmInTheTable(filmId, userId, 'later_film');
     if(film) {
       throw ApiError.BadRequest('The film is already in the table')
     }
-    return (await db.query(`INSERT INTO favourite_film VALUES ('${filmId}', '${userId}') RETURNING *`))[0];
+    return (await db.query(`INSERT INTO favourite_film VALUES ('${filmId}', '${filmTitle}', now(), '${userId}') RETURNING *`))[0];
   }
 
   async removeFavouriteFilm(filmId, refreshToken) {
-    const userId = await UserService.getUserIdByToken(refreshToken);
+    const userId = (await UserService.getUserByToken(refreshToken)).user_id;
     return (await db.query(`DELETE FROM favourite_film WHERE id = '${filmId}' AND user_id = '${userId}' RETURNING *`));
   }
 
@@ -30,20 +30,20 @@ class FilmService {
       throw ApiError.BadRequest('Invalid incoming data');
     }
     const offset = limit !== 'ALL' ? (page - 1) * limit : page-1;
-    return (await db.query(`SELECT * FROM later_film WHERE user_id = '${userId}' LIMIT ${limit} OFFSET '${offset}'`));
+    return (await db.query(`SELECT id, title, time FROM later_film WHERE user_id = '${userId}' LIMIT ${limit} OFFSET '${offset}'`));
   }
 
-  async addLaterFilm(filmId, refreshToken) {
-    const userId = await UserService.getUserIdByToken(refreshToken);
+  async addLaterFilm(filmId, refreshToken, filmTitle) {
+    const userId = (await UserService.getUserByToken(refreshToken)).user_id;
     const film = await this.isFilmInTheTable(filmId, userId, 'later_film');
     if(film) {
       throw ApiError.BadRequest('The film is already in the table')
     }
-    return (await db.query(`INSERT INTO later_film VALUES ('${filmId}', '${userId}') RETURNING *`))[0];
+    return (await db.query(`INSERT INTO later_film VALUES ('${filmId}', '${filmTitle}', now(),  '${userId}') RETURNING *`))[0];
   }
 
   async removeLaterFilm(filmId, refreshToken) {
-    const userId = await UserService.getUserIdByToken(refreshToken);
+    const userId = (await UserService.getUserByToken(refreshToken)).user_id;
     return (await db.query(`DELETE FROM later_film WHERE id = '${filmId}' AND user_id = '${userId}' RETURNING *`));
   }
 
@@ -52,16 +52,20 @@ class FilmService {
       throw ApiError.BadRequest('Invalid incoming data');
     }
     const offset = limit !== 'ALL' ? (page - 1) * limit : page-1;
-    return (await db.query(`SELECT * FROM rated_film WHERE user_id = '${userId}' LIMIT ${limit} OFFSET '${offset}'`));
+    return (await db.query(`SELECT id, title, time, rating FROM rated_film WHERE user_id = '${userId}' LIMIT ${limit} OFFSET '${offset}'`));
   }
 
-  async addRatedFilm(filmId, rating, refreshToken) {
-    const userId = await UserService.getUserIdByToken(refreshToken);
-    return (await db.query(`INSERT INTO rated_film VALUES ('${filmId}', '${userId}', '${rating}') ON CONFLICT (id) DO UPDATE SET rating = excluded.rating RETURNING *`))[0];
+  async addRatedFilm(filmId, rating, refreshToken, filmTitle) {
+    const userId = (await UserService.getUserByToken(refreshToken)).user_id;
+    const userRating = (await db.query(`SELECT * FROM rated_film WHERE id = '${filmId}' AND user_id = '${userId}'`))[0];
+    if(userRating) {
+      return (await db.query(`UPDATE rated_film SET rating = '${rating}' WHERE id = '${filmId}' AND user_id = '${userId}' RETURNING *`))[0];
+    }
+    return (await db.query(`INSERT INTO rated_film VALUES ('${filmId}', '${filmTitle}', now(), '${userId}', '${rating}') RETURNING *`))[0];
   }
 
   async removeRatedFilm(filmId, refreshToken) {
-    const userId = await UserService.getUserIdByToken(refreshToken);
+    const userId = (await UserService.getUserByToken(refreshToken)).user_id;
     return (await db.query(`DELETE FROM rated_film WHERE id = '${filmId}' AND user_id = '${userId}' RETURNING *`));
   }
 
@@ -71,7 +75,7 @@ class FilmService {
   }
 
   async userFilm (filmId, refreshToken) {
-    const userId = await UserService.getUserIdByToken(refreshToken);
+    const userId = (await UserService.getUserByToken(refreshToken)).user_id;
     const isRated = await this.isFilmInTheTable(filmId, userId, 'rated_film');
     let rating;
     if(isRated) {

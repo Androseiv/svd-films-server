@@ -4,6 +4,8 @@ const MailService = require('./mail-service')
 const TokenService = require('./token-service')
 const uuid = require('uuid')
 const ApiError = require('../exceptions/api-error')
+const fs = require("fs");
+
 
 class UserService {
   async registration(email, password) {
@@ -14,9 +16,14 @@ class UserService {
     const hashPassword = await bcrypt.hash(password, 3);
     const activationLink = uuid.v4();
 
-    const newUser = (await db.query(`INSERT INTO "user"(email, username, password, isActivated, activationLink) VALUES ('${email}', '${email}', '${hashPassword}', false, '${activationLink}') RETURNING *`))[0];
+    const newUser = (await db.query(`INSERT INTO "user"(email, username, password, isActivated, activationLink) VALUES ('${email}', '${email.split('@')[0]}', '${hashPassword}', false, '${activationLink}') RETURNING *`))[0];
     await MailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
     return TokenService.generateAndSaveTokens(newUser)
+  }
+
+  async changeUsername(username, refreshToken) {
+    const user = await this.getUserByToken(refreshToken);
+    return (await db.query(`UPDATE "user" SET username = '${username}' WHERE id = '${user.id}' RETURNING username`))[0];
   }
 
   async login(email, password) {
@@ -57,10 +64,24 @@ class UserService {
     return TokenService.generateAndSaveTokens(user)
   }
 
-  async getUserIdByToken(refreshToken) {
-    return (await db.query(`SELECT user_id FROM token WHERE refreshtoken = '${refreshToken}'`))[0].user_id
+  async getUserByToken(refreshToken) {
+    return (await db.query(`SELECT * FROM "user" INNER JOIN token t on "user".id = t.user_id WHERE t.refreshtoken = '${refreshToken}'`))[0];
   }
 
+  async getListLength (userId, table) {
+    return (await db.query(`SELECT COUNT(*) FROM "${table}" WHERE user_id = '${userId}'`))[0].count;
+  }
+
+  async getUserInfo (userId) {
+    return {
+      username: (await db.query(`SELECT username FROM "user" WHERE id = '${userId}'`))[0].username,
+      listsLength: {
+        later: await this.getListLength(userId, 'later_film'),
+        favourite: await this.getListLength(userId, 'favourite_film'),
+        rated: await this.getListLength(userId, 'rated_film')
+      }
+    }
+  }
 }
 
 module.exports = new UserService();
