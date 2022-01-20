@@ -4,7 +4,6 @@ const MailService = require('./mail-service')
 const TokenService = require('./token-service')
 const uuid = require('uuid')
 const ApiError = require('../exceptions/api-error')
-const fs = require("fs");
 
 
 class UserService {
