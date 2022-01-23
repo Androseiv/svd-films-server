@@ -42,7 +42,7 @@ class FilmService {
     return (await db.query(`INSERT INTO later_film VALUES ('${filmId}', '${filmTitle}', now(),  '${userId}') RETURNING *`))[0];
   }
 
-  async removeLaterFilm(filmId) {
+  async removeLaterFilm(filmId, userId) {
     return (await db.query(`DELETE FROM later_film WHERE id = '${filmId}' AND user_id = '${userId}' RETURNING *`));
   }
 
