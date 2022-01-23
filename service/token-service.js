@@ -12,13 +12,13 @@ class TokenService {
     }
   }
 
-  async saveToken(userId, refreshToken) {
-    const tokenData = await db.query(`SELECT * from token where user_id = '${userId}'`);
+  async saveToken(user_id, refreshToken) {
+    const tokenData = await db.query(`SELECT * from token where user_id = '${user_id}'`);
     if(tokenData.length) {
-      await db.query(`UPDATE token SET refreshtoken = '${refreshToken}' where user_id = '${userId}'`);
+      await db.query(`UPDATE token SET refreshtoken = '${refreshToken}' where user_id = '${user_id}'`);
       return;
     }
-    await db.query(`INSERT INTO token(user_id, refreshtoken) VALUES ('${userId}', '${refreshToken}')`);
+    await db.query(`INSERT INTO token(user_id, refreshtoken) VALUES ('${user_id}', '${refreshToken}')`);
   }
 
   async removeToken(refreshToken) {

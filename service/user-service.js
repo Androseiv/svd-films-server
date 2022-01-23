@@ -62,21 +62,17 @@ class UserService {
     return TokenService.generateAndSaveTokens(user)
   }
 
-  async getUserByToken(refreshToken) {
-    return (await db.query(`SELECT * FROM "user" INNER JOIN token t on "user".id = t.user_id WHERE t.refreshtoken = '${refreshToken}'`))[0];
+  async getListLength (user_id, table) {
+    return (await db.query(`SELECT COUNT(*) FROM "${table}" WHERE user_id = '${user_id}'`))[0].count;
   }
 
-  async getListLength (userId, table) {
-    return (await db.query(`SELECT COUNT(*) FROM "${table}" WHERE user_id = '${userId}'`))[0].count;
-  }
-
-  async getUserInfo (userId) {
+  async getUserInfo (user_id) {
     return {
-      username: (await db.query(`SELECT username FROM "user" WHERE id = '${userId}'`))[0].username,
+      username: (await db.query(`SELECT username FROM "user" WHERE id = '${user_id}'`))[0].username,
       listsLength: {
-        later: await this.getListLength(userId, 'later_film'),
-        favourite: await this.getListLength(userId, 'favourite_film'),
-        rated: await this.getListLength(userId, 'rated_film')
+        later: await this.getListLength(user_id, 'later_film'),
+        favourite: await this.getListLength(user_id, 'favourite_film'),
+        rated: await this.getListLength(user_id, 'rated_film')
       }
     }
   }

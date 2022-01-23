@@ -25,8 +25,8 @@ class UserController {
       if(!errors.isEmpty()) {
         return next(ApiError.BadRequest('Validation Error', errors.array()))
       }
-      const {username, userId} = req.body;
-      const userData = await UserService.changeUsername(username, userId);
+      const {username, user_id} = req.body;
+      const userData = await UserService.changeUsername(username, user_id);
       return res.json(userData);
     } catch (err) {
       next(err)
@@ -78,8 +78,8 @@ class UserController {
 
   async getUserInfo(req, res, next) {
     try {
-      const {userId} = req.params;
-      const data = await UserService.getUserInfo(userId);
+      const {user_id} = req.params;
+      const data = await UserService.getUserInfo(user_id);
       return res.json(data);
     } catch (err) {
       next(err)
