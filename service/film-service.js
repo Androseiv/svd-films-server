@@ -78,7 +78,7 @@ class FilmService {
        rating = (await db.query(`SELECT rating FROM rated_film WHERE id = '${film_id}' AND user_id = '${user_id}'`))[0].rating
     }
     return {
-      isLater: await this.isFilmInTheTable(film_id, user_id, this.RATED_FILM),
+      isLater: await this.isFilmInTheTable(film_id, user_id, this.LATER_FILM),
       isFavourite: await this.isFilmInTheTable(film_id, user_id, this.FAVOURITE_FILM),
       isRated,
       rating
