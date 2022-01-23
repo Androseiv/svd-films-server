@@ -2,6 +2,10 @@ const db = require('../db/index')
 const ApiError = require('../exceptions/api-error')
 
 class FilmService {
+  LATER_FILM = 'later_film';
+  FAVOURITE_FILM = 'favourite_film';
+  RATED_FILM = 'rated_film';
+
   async getFavouriteFilms(userId, page = 1, limit = 'ALL') {
     if(page < 1 || limit < 1) {
       throw ApiError.BadRequest('Invalid incoming data');
@@ -11,7 +15,7 @@ class FilmService {
   }
 
   async addFavouriteFilm(filmId, userId, filmTitle) {
-    const film = await this.isFilmInTheTable(filmId, userId, 'favourite_film');
+    const film = await this.isFilmInTheTable(filmId, userId, this.FAVOURITE_FILM);
     if(film) {
       throw ApiError.BadRequest('The film is already in the table')
     }
@@ -31,7 +35,7 @@ class FilmService {
   }
 
   async addLaterFilm(filmId, userId, filmTitle) {
-    const film = await this.isFilmInTheTable(filmId, userId, 'later_film');
+    const film = await this.isFilmInTheTable(filmId, userId, this.LATER_FILM);
     if(film) {
       throw ApiError.BadRequest('The film is already in the table')
     }
@@ -68,14 +72,14 @@ class FilmService {
   }
 
   async userFilm (filmId, userId) {
-    const isRated = await this.isFilmInTheTable(filmId, userId, 'rated_film');
+    const isRated = await this.isFilmInTheTable(filmId, userId, this.RATED_FILM);
     let rating;
     if(isRated) {
        rating = (await db.query(`SELECT rating FROM rated_film WHERE id = '${filmId}' AND user_id = '${userId}'`))[0].rating
     }
     return {
-      isLater: await this.isFilmInTheTable(filmId, userId, 'later_film'),
-      isFavourite: await this.isFilmInTheTable(filmId, userId, 'favourite_film'),
+      isLater: await this.isFilmInTheTable(filmId, userId, this.RATED_FILM),
+      isFavourite: await this.isFilmInTheTable(filmId, userId, this.FAVOURITE_FILM),
       isRated,
       rating
     };
