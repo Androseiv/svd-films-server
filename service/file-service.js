@@ -1,9 +1,7 @@
-const UserService = require('../service/user-service')
 const db = require('../db/index')
 
 class FileService {
-  async uploadImage(image, refreshToken) {
-    const userId = (await UserService.getUserByToken(refreshToken)).user_id;
+  async uploadImage(image, userId) {
     const extension = image.mimetype.split('/').pop();
     const path = `${process.env.FILE_PATH}\\avatar${userId}.${extension}`;
     image.mv(path);

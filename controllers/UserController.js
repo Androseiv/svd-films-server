@@ -25,9 +25,8 @@ class UserController {
       if(!errors.isEmpty()) {
         return next(ApiError.BadRequest('Validation Error', errors.array()))
       }
-      const {username} = req.body;
-      const {refreshToken} = req.cookies;
-      const userData = await UserService.changeUsername(username, refreshToken);
+      const {username, userId} = req.body;
+      const userData = await UserService.changeUsername(username, userId);
       return res.json(userData);
     } catch (err) {
       next(err)
@@ -39,7 +38,6 @@ class UserController {
       const {email, password} = req.body;
       const userData = await UserService.login(email, password)
       res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true, secure: true, sameSite: "none"});
-      console.log(res, 'CONTROLLER42');
       return res.json(userData);
     } catch (err) {
       next(err);
@@ -69,7 +67,6 @@ class UserController {
 
   async refresh(req, res, next) {
     try {
-      console.log(req, 'controller71')
       const {refreshToken} = req.cookies;
       const userData = await UserService.refresh(refreshToken)
       res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true, secure: true, sameSite: "none"});
@@ -92,8 +89,8 @@ class UserController {
   async changeUserImage(req, res, next) {
     try {
       const image = req.files.image;
-      const {refreshToken} = req.cookies;
-      const filePath = await FileService.uploadImage(image, refreshToken);
+      const {userId} = req.body;
+      const filePath = await FileService.uploadImage(image, userId);
       return res.json(filePath);
     } catch (err) {
       next(err)

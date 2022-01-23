@@ -20,9 +20,8 @@ class UserService {
     return TokenService.generateAndSaveTokens(newUser)
   }
 
-  async changeUsername(username, refreshToken) {
-    const user = await this.getUserByToken(refreshToken);
-    return (await db.query(`UPDATE "user" SET username = '${username}' WHERE id = '${user.id}' RETURNING username`))[0];
+  async changeUsername(username, userId) {
+    return (await db.query(`UPDATE "user" SET username = '${username}' WHERE id = '${userId}' RETURNING username`))[0];
   }
 
   async login(email, password) {
@@ -51,13 +50,11 @@ class UserService {
   }
 
   async refresh(refreshToken) {
-    console.log(refreshToken, 'SERVICE54');
     if(!refreshToken) {
       throw ApiError.UnauthorizedError();
     }
     const userData = TokenService.validateRefreshToken(refreshToken);
     const tokenFromDb = await TokenService.findToken(refreshToken);
-    console.log(userData, tokenFromDb, 'SERVICE60')
     if(!userData || !tokenFromDb) {
       throw ApiError.UnauthorizedError();
     }

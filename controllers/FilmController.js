@@ -14,9 +14,8 @@ class FilmController {
 
   async addFavouriteFilm(req, res, next) {
     try {
-      const {film_id, title} = req.body;
-      const {refreshToken} = req.cookies;
-      const film = await FilmService.addFavouriteFilm(film_id, refreshToken, title);
+      const {film_id, title, userId} = req.body;
+      const film = await FilmService.addFavouriteFilm(film_id, userId, title);
       return res.json(film);
     } catch (err) {
       next(err);
@@ -25,9 +24,8 @@ class FilmController {
 
   async removeFavouriteFilm(req, res, next) {
     try {
-      const {film_id} = req.body;
-      const {refreshToken} = req.cookies;
-      const film = await FilmService.removeFavouriteFilm(film_id, refreshToken);
+      const {film_id, userId} = req.body;
+      const film = await FilmService.removeFavouriteFilm(film_id, userId);
       return res.json(film);
     } catch (err) {
       next(err);
@@ -47,9 +45,8 @@ class FilmController {
 
   async addLaterFilm(req, res, next) {
     try {
-      const {film_id, title} = req.body;
-      const {refreshToken} = req.cookies;
-      const film = await FilmService.addLaterFilm(film_id, refreshToken, title);
+      const {film_id, title, userId} = req.body;
+      const film = await FilmService.addLaterFilm(film_id, userId, title);
       return res.json(film);
     } catch (err) {
       next(err);
@@ -58,9 +55,8 @@ class FilmController {
 
   async removeLaterFilm(req, res, next) {
     try {
-      const {film_id} = req.body;
-      const {refreshToken} = req.cookies;
-      const film = await FilmService.removeLaterFilm(film_id, refreshToken);
+      const {film_id, userId} = req.body;
+      const film = await FilmService.removeLaterFilm(film_id, userId);
       return res.json(film);
     } catch (err) {
       next(err);
@@ -80,9 +76,8 @@ class FilmController {
 
   async addRatedFilm(req, res, next) {
     try {
-      const {film_id, rating, title} = req.body;
-      const {refreshToken} = req.cookies;
-      const film = await FilmService.addRatedFilm(film_id, rating, refreshToken, title);
+      const {film_id, rating, title, userId} = req.body;
+      const film = await FilmService.addRatedFilm(film_id, rating, userId, title);
       return res.json(film);
     } catch (err) {
       next(err);
@@ -91,9 +86,8 @@ class FilmController {
 
   async removeRatedFilm(req, res, next) {
     try {
-      const {film_id} = req.body;
-      const {refreshToken} = req.cookies;
-      const film = await FilmService.removeRatedFilm(film_id, refreshToken);
+      const {film_id, userId} = req.body;
+      const film = await FilmService.removeRatedFilm(film_id, userId);
       return res.json(film);
     } catch (err) {
       next(err);
@@ -102,9 +96,8 @@ class FilmController {
 
   async userFilm(req, res, next) {
     try {
-      const {filmId} = req.params;
-      const {refreshToken} = req.cookies;
-      const data = await FilmService.userFilm(filmId, refreshToken);
+      const {filmId, userId} = req.params;
+      const data = await FilmService.userFilm(filmId, userId);
       return res.json(data);
     } catch (err) {
       next(err)
