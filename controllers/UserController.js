@@ -89,7 +89,7 @@ class UserController {
   async changeUserImage(req, res, next) {
     try {
       const image = req.files.image;
-      console.log(req.formData.get('id'), 'CONTROLLER92')
+      console.log(req, 'CONTROLLER92')
       const filePath = await FileService.uploadImage(image, userId);
       return res.json(filePath);
     } catch (err) {
