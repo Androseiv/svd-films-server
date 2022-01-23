@@ -35,7 +35,7 @@ router.get('/:userId/films/rated', FilmController.getRatedFilms);
 router.post('/films/rated/add', authMiddleware, FilmController.addRatedFilm);
 router.post('/films/rated/remove', authMiddleware, FilmController.removeRatedFilm);
 
-router.get('/info/film/:filmId', authMiddleware, FilmController.userFilm);
+router.get('/info/film/:filmId/:userId', authMiddleware, FilmController.userFilm);
 router.get('/info/user/:userId', UserController.getUserInfo);
 
 module.exports = router;
