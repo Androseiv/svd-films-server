@@ -6,7 +6,12 @@ const uuid = require('uuid')
 const ApiError = require('../exceptions/api-error')
 
 
+
 class UserService {
+  LATER_FILM = 'later_film';
+  FAVOURITE_FILM = 'favourite_film';
+  RATED_FILM = 'rated_film';
+
   async registration(email, password) {
     const user = (await db.query(`SELECT * FROM "user" WHERE email = '${email}'`))[0];
     if(user) {
@@ -70,9 +75,9 @@ class UserService {
     return {
       username: (await db.query(`SELECT username FROM "user" WHERE id = '${user_id}'`))[0].username,
       listsLength: {
-        later: await this.getListLength(user_id, 'later_film'),
-        favourite: await this.getListLength(user_id, 'favourite_film'),
-        rated: await this.getListLength(user_id, 'rated_film')
+        later: await this.getListLength(user_id, this.LATER_FILM),
+        favourite: await this.getListLength(user_id, this.FAVOURITE_FILM),
+        rated: await this.getListLength(user_id, this.RATED_FILM)
       }
     }
   }
