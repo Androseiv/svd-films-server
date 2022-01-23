@@ -11,7 +11,7 @@ class FilmService {
   }
 
   async addFavouriteFilm(filmId, userId, filmTitle) {
-    const film = await this.isFilmInTheTable(filmId, userId, 'later_film');
+    const film = await this.isFilmInTheTable(filmId, userId, 'favourite_film');
     if(film) {
       throw ApiError.BadRequest('The film is already in the table')
     }
