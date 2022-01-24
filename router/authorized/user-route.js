@@ -8,6 +8,7 @@ router.post('/username/change',
   UserController.changeUsername
 );
 router.post('/image/change', UserController.changeUserImage);
-router.get('/info/user/:user_id', UserController.getUserInfo);
+router.get('/info/:user_id', UserController.getUserInfo);
+router.get('/image/:user_id', UserController.getUserImage);
 
 module.exports = router;

@@ -2,6 +2,7 @@ const UserService = require('../service/user-service')
 const {validationResult} = require('express-validator')
 const ApiError = require('../exceptions/api-error')
 const FileService = require("../service/file-service");
+const fs = require('fs')
 
 class UserController {
   async registration(req, res, next) {
@@ -37,7 +38,7 @@ class UserController {
     try {
       const {email, password} = req.body;
       const userData = await UserService.login(email, password)
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true, secure: true, sameSite: "none"});
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true, secure: true, sameSite: 'none'});
       return res.json(userData);
     } catch (err) {
       next(err);
@@ -69,7 +70,7 @@ class UserController {
     try {
       const {refreshToken} = req.cookies;
       const userData = await UserService.refresh(refreshToken)
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true, secure: true, sameSite: "none"});
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true, secure: true, sameSite: 'none'});
       return res.json(userData);
     } catch (err) {
       next(err);
@@ -89,14 +90,27 @@ class UserController {
   async changeUserImage(req, res, next) {
     try {
       const image = req.files.image;
-      const {id} = req.body;
-      const filePath = await FileService.uploadImage(image, id);
+      const {user_id} = req.body;
+      const filePath = await FileService.uploadImage(image, user_id);
       return res.json(filePath);
     } catch (err) {
       next(err)
     }
   }
 
+  async getUserImage(req, res, next) {
+    try {
+      const {user_id} = req.params;
+      const path = `${process.env.FILE_PATH}/avatar${user_id}.jpg`
+      if(fs.existsSync(path)){
+        let imageBase64 = fs.readFileSync(path, "base64");
+        return res.json(imageBase64);
+      }
+      return next(ApiError.BadRequest('User has no image'));
+    } catch (err) {
+      next(err)
+    }
+  }
 }
 
 module.exports = new UserController();
