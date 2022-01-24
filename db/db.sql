@@ -8,12 +8,6 @@ create table "user"
     activationLink varchar(255)
 );
 
-create table user_photo
-(
-    user_id integer references "user" (id),
-    path    varchar(255)
-);
-
 create table token
 (
     user_id      integer references "user" (id),
