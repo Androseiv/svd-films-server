@@ -2,7 +2,6 @@ const UserService = require('../service/user-service')
 const {validationResult} = require('express-validator')
 const ApiError = require('../exceptions/api-error')
 const FileService = require("../service/file-service");
-const fs = require('fs')
 
 class UserController {
   async registration(req, res, next) {
@@ -91,22 +90,22 @@ class UserController {
     try {
       const image = req.files.image;
       const {user_id} = req.body;
-      const filePath = await FileService.uploadImage(image, user_id);
-      return res.json(filePath);
+      const PATH = `${process.env.FILE_PATH}/avatar${user_id}.jpg`;
+      await FileService.uploadImage(image, PATH);
+      await FileService.compressImage(user_id);
+      return res.json(PATH);
     } catch (err) {
       next(err)
     }
   }
 
-  async getUserImage(req, res, next) {
+  getUserImage(req, res, next) {
     try {
       const {user_id} = req.params;
-      const path = `${process.env.FILE_PATH}/avatar${user_id}.jpg`
-      if(fs.existsSync(path)){
-        let imageBase64 = fs.readFileSync(path, "base64");
-        return res.json(imageBase64);
-      }
-      return res.json(null);
+      const PATH = `${process.env.FILE_PATH}/avatar${user_id}.jpg`
+      const imageBase64 = FileService.getUserImage(PATH);
+
+      return res.json(imageBase64);
     } catch (err) {
       next(err)
     }
