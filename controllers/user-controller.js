@@ -106,7 +106,7 @@ class UserController {
         let imageBase64 = fs.readFileSync(path, "base64");
         return res.json(imageBase64);
       }
-      return next(ApiError.BadRequest('User has no image'));
+      return res.json(null);
     } catch (err) {
       next(err)
     }
