@@ -21,7 +21,7 @@ class UserService {
     const activationLink = uuid.v4();
 
     const newUser = (await db.query(`INSERT INTO "user"(email, username, password, isActivated, activationLink) VALUES ('${email}', '${email.split('@')[0]}', '${hashPassword}', false, '${activationLink}') RETURNING *`))[0];
-    await MailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
+    await MailService.sendActivationMail(email, `${process.env.API_URL}/api/unauthorized/user/activate/${activationLink}`);
     return TokenService.generateAndSaveTokens(newUser)
   }
 

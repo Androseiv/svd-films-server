@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const db = require('../db/index')
 const UserDto = require("../dtos/user-dto");
+const FileService = require('../service/file-service')
 
 class TokenService {
   generateTokens(payload) {
@@ -51,7 +52,7 @@ class TokenService {
     const tokens = this.generateTokens({...userDto});
     await this.saveToken(userDto.id, tokens.refreshToken);
 
-    return {...tokens, user: userDto};
+    return {...tokens, user: {...userDto, compressedImage: FileService.getUserCompressedImage(userDto.id)}};
   }
 }
 
