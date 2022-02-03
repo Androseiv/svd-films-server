@@ -17,7 +17,6 @@ create table token
 create table rated_film
 (
     id      integer,
-    title   varchar(255),
     time    timestamptz,
     user_id integer references "user" (id),
     rating  integer
@@ -26,7 +25,6 @@ create table rated_film
 create table favourite_film
 (
     id      integer,
-    title   varchar(255),
     time    timestamptz,
     user_id integer references "user" (id)
 );
@@ -34,7 +32,6 @@ create table favourite_film
 create table later_film
 (
     id      integer,
-    title   varchar(255),
     time    timestamptz,
     user_id integer references "user" (id)
 );

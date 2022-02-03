@@ -14,8 +14,8 @@ class FilmController {
 
   async addFavouriteFilm(req, res, next) {
     try {
-      const {film_id, title, user_id} = req.body;
-      const film = await FilmService.addFavouriteFilm(film_id, user_id, title);
+      const {film_id, user_id} = req.body;
+      const film = await FilmService.addFavouriteFilm(film_id, user_id);
       return res.json(film);
     } catch (err) {
       next(err);
@@ -45,8 +45,8 @@ class FilmController {
 
   async addLaterFilm(req, res, next) {
     try {
-      const {film_id, title, user_id} = req.body;
-      const film = await FilmService.addLaterFilm(film_id, user_id, title);
+      const {film_id, user_id} = req.body;
+      const film = await FilmService.addLaterFilm(film_id, user_id);
       return res.json(film);
     } catch (err) {
       next(err);
@@ -76,8 +76,8 @@ class FilmController {
 
   async addRatedFilm(req, res, next) {
     try {
-      const {film_id, rating, title, user_id} = req.body;
-      const film = await FilmService.addRatedFilm(film_id, rating, user_id, title);
+      const {film_id, rating, user_id} = req.body;
+      const film = await FilmService.addRatedFilm(film_id, rating, user_id);
       return res.json(film);
     } catch (err) {
       next(err);
