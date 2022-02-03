@@ -19,7 +19,7 @@ class FilmService {
     if(film) {
       throw ApiError.BadRequest('The film is already in the table')
     }
-    return (await db.query(`INSERT INTO favourite_film VALUES ('${film_id}', now(), '${user_id}') RETURNING *`))[0];
+    return (await db.query(`INSERT INTO favourite_film VALUES ('${film_id}', '${user_id}') RETURNING *`))[0];
   }
 
   async removeFavouriteFilm(film_id, user_id) {
@@ -39,7 +39,7 @@ class FilmService {
     if(film) {
       throw ApiError.BadRequest('The film is already in the table')
     }
-    return (await db.query(`INSERT INTO later_film VALUES ('${film_id}', now(),  '${user_id}') RETURNING *`))[0];
+    return (await db.query(`INSERT INTO later_film VALUES ('${film_id}',  '${user_id}') RETURNING *`))[0];
   }
 
   async removeLaterFilm(film_id, user_id) {
@@ -59,7 +59,7 @@ class FilmService {
     if(userRating) {
       return (await db.query(`UPDATE rated_film SET rating = '${rating}' WHERE id = '${film_id}' AND user_id = '${user_id}' RETURNING *`))[0];
     }
-    return (await db.query(`INSERT INTO rated_film VALUES ('${film_id}', now(), '${user_id}', '${rating}') RETURNING *`))[0];
+    return (await db.query(`INSERT INTO rated_film VALUES ('${film_id}', '${user_id}', '${rating}') RETURNING *`))[0];
   }
 
   async removeRatedFilm(film_id, user_id) {
