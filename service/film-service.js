@@ -51,7 +51,7 @@ class FilmService {
       throw ApiError.BadRequest('Invalid incoming data');
     }
     const offset = limit !== 'ALL' ? (page - 1) * limit : page-1;
-    return (await db.query(`SELECT id, time, rating FROM rated_film WHERE user_id = '${user_id}' LIMIT ${limit} OFFSET '${offset}'`));
+    return (await db.query(`SELECT id, time, rating AS user_rating FROM rated_film WHERE user_id = '${user_id}' LIMIT ${limit} OFFSET '${offset}'`));
   }
 
   async addRatedFilm(film_id, rating, user_id) {
