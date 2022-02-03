@@ -51,7 +51,7 @@ class TokenService {
     const tokens = this.generateTokens({...userDto});
     await this.saveToken(userDto.id, tokens.refreshToken);
 
-    return {...tokens, user: userDto};
+    return {...tokens, user: {...userDto, username: (await db.query(`SELECT username FROM "user" WHERE id = '${user_id}'`))[0].username}};
   }
 }
 
