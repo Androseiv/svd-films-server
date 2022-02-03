@@ -52,7 +52,7 @@ class TokenService {
     const tokens = this.generateTokens({...userDto});
     await this.saveToken(userDto.id, tokens.refreshToken);
 
-    return {...tokens, user: {...userDto, compressedImage: FileService.getUserCompressedImage(userDto.id)}};
+    return {...tokens, user: {...userDto, compressedImage: FileService.getUserCompressedImage(userDto.id), username: (await db.query(`SELECT username FROM "user" WHERE id = '${user_id}'`))[0].username}};
   }
 }
 
