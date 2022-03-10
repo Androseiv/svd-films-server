@@ -71,24 +71,20 @@ class UserService {
     return TokenService.generateAndSaveTokens(user)
   }
 
-  async getListLength (user_id, table) {
-    return (await db.query(`SELECT COUNT(*) FROM "${table}" WHERE user_id = '${user_id}'`))[0].count;
+  async getMovieListsLength(user_id) {
+    return (await db.query(`SELECT ( SELECT COUNT(*) FROM later_film WHERE user_id = '${user_id}' ) AS later, ( SELECT COUNT(*) FROM favourite_film WHERE user_id = '${user_id}' ) AS favourite, ( SELECT COUNT(*) FROM rated_film WHERE user_id = '${user_id}' ) AS rated`))[0];
+  }
+
+  async getTVListsLength(user_id) {
+    return (await db.query(`SELECT ( SELECT COUNT(*) FROM later_tv WHERE user_id = '${user_id}' ) AS later, ( SELECT COUNT(*) FROM favourite_tv WHERE user_id = '${user_id}' ) AS favourite, ( SELECT COUNT(*) FROM rated_tv WHERE user_id = '${user_id}' ) AS rated`))[0];
   }
 
   async getUserInfo (user_id) {
     return {
       username: (await db.query(`SELECT username FROM "user" WHERE id = '${user_id}'`))[0].username,
       listsLength: {
-        tv: {
-          later:+await this.getListLength(user_id, this.LATER_TV),
-          favourite: +await this.getListLength(user_id, this.FAVOURITE_TV),
-          rated: +await this.getListLength(user_id, this.RATED_TV)
-        },
-        movie: {
-          later: +await this.getListLength(user_id, this.LATER_MOVIE),
-          favourite: +await this.getListLength(user_id, this.FAVOURITE_MOVIE),
-          rated: +await this.getListLength(user_id, this.RATED_MOVIE)
-        }
+        tv: await this.getTVListsLength(user_id),
+        movie: await this.getMovieListsLength(user_id)
       }
     }
   }
