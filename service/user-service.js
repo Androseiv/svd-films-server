@@ -8,9 +8,9 @@ const ApiError = require('../exceptions/api-error')
 
 
 class UserService {
-  LATER_FILM = 'later_film';
-  FAVOURITE_FILM = 'favourite_film';
-  RATED_FILM = 'rated_film';
+  LATER_MOVIE = 'later_film';
+  FAVOURITE_MOVIE = 'favourite_film';
+  RATED_MOVIE = 'rated_film';
   LATER_TV = 'later_tv';
   FAVOURITE_TV = 'favourite_tv';
   RATED_TV = 'rated_tv';
@@ -85,9 +85,9 @@ class UserService {
           rated: await this.getListLength(user_id, this.RATED_TV)
         },
         movie: {
-          later: await this.getListLength(user_id, this.LATER_TV),
-          favourite: await this.getListLength(user_id, this.FAVOURITE_TV),
-          rated: await this.getListLength(user_id, this.RATED_TV)
+          later: await this.getListLength(user_id, this.LATER_MOVIE),
+          favourite: await this.getListLength(user_id, this.FAVOURITE_MOVIE),
+          rated: await this.getListLength(user_id, this.RATED_MOVIE)
         }
       }
     }
