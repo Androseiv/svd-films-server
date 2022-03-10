@@ -14,9 +14,9 @@ class TVController {
 
   async addFavouriteTV(req, res, next) {
     try {
-      const {film_id, title, user_id} = req.body;
-      const film = await TVService.addFavouriteTV(film_id, user_id, title);
-      return res.json(film);
+      const {tv_id, title, user_id} = req.body;
+      const tv = await TVService.addFavouriteTV(tv_id, user_id, title);
+      return res.json(tv);
     } catch (err) {
       next(err);
     }
@@ -24,9 +24,9 @@ class TVController {
 
   async removeFavouriteTV(req, res, next) {
     try {
-      const {film_id, user_id} = req.body;
-      const film = await TVService.removeFavouriteTV(film_id, user_id);
-      return res.json(film);
+      const {tv_id, user_id} = req.body;
+      const tv = await TVService.removeFavouriteTV(tv_id, user_id);
+      return res.json(tv);
     } catch (err) {
       next(err);
     }
@@ -45,9 +45,9 @@ class TVController {
 
   async addLaterTV(req, res, next) {
     try {
-      const {film_id, title, user_id} = req.body;
-      const film = await TVService.addLaterTV(film_id, user_id, title);
-      return res.json(film);
+      const {tv_id, title, user_id} = req.body;
+      const tv = await TVService.addLaterTV(tv_id, user_id, title);
+      return res.json(tv);
     } catch (err) {
       next(err);
     }
@@ -55,9 +55,9 @@ class TVController {
 
   async removeLaterTV(req, res, next) {
     try {
-      const {film_id, user_id} = req.body;
-      const film = await TVService.removeLaterTV(film_id, user_id);
-      return res.json(film);
+      const {tv_id, user_id} = req.body;
+      const tv = await TVService.removeLaterTV(tv_id, user_id);
+      return res.json(tv);
     } catch (err) {
       next(err);
     }
@@ -76,9 +76,9 @@ class TVController {
 
   async addRatedTV(req, res, next) {
     try {
-      const {film_id, rating, title, user_id} = req.body;
-      const film = await TVService.addRatedTV(film_id, rating, user_id, title);
-      return res.json(film);
+      const {tv_id, rating, title, user_id} = req.body;
+      const tv = await TVService.addRatedTV(tv_id, rating, user_id, title);
+      return res.json(tv);
     } catch (err) {
       next(err);
     }
@@ -86,9 +86,9 @@ class TVController {
 
   async removeRatedTV(req, res, next) {
     try {
-      const {film_id, user_id} = req.body;
-      const film = await TVService.removeRatedTV(film_id, user_id);
-      return res.json(film);
+      const {tv_id, user_id} = req.body;
+      const tv = await TVService.removeRatedTV(tv_id, user_id);
+      return res.json(tv);
     } catch (err) {
       next(err);
     }
@@ -96,8 +96,8 @@ class TVController {
 
   async userTV(req, res, next) {
     try {
-      const {film_id, user_id} = req.params;
-      const data = await TVService.userTV(film_id, user_id);
+      const {tv_id, user_id} = req.params;
+      const data = await TVService.userTV(tv_id, user_id);
       return res.json(data);
     } catch (err) {
       next(err)

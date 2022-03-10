@@ -14,12 +14,12 @@ class TVService {
     return (await db.query(`SELECT id, title, time FROM favourite_tv WHERE user_id = '${user_id}' LIMIT ${limit} OFFSET '${offset}'`));
   }
 
-  async addFavouriteTV(tv_id, user_id, filmTitle) {
+  async addFavouriteTV(tv_id, user_id, title) {
     const film = await this.isTVInTheTable(tv_id, user_id, this.favourite_tv);
     if(film) {
       throw ApiError.BadRequest('The film is already in the table')
     }
-    return (await db.query(`INSERT INTO favourite_tv VALUES ('${tv_id}', '${filmTitle}', now(), '${user_id}') RETURNING *`))[0];
+    return (await db.query(`INSERT INTO favourite_tv VALUES ('${tv_id}', '${title}', now(), '${user_id}') RETURNING *`))[0];
   }
 
   async removeFavouriteTV(tv_id, user_id) {
@@ -34,12 +34,12 @@ class TVService {
     return (await db.query(`SELECT id, title, time FROM later_tv WHERE user_id = '${user_id}' LIMIT ${limit} OFFSET '${offset}'`));
   }
 
-  async addLaterTV(tv_id, user_id, filmTitle) {
+  async addLaterTV(tv_id, user_id, title) {
     const film = await this.isTVInTheTable(tv_id, user_id, this.later_tv);
     if(film) {
       throw ApiError.BadRequest('The film is already in the table')
     }
-    return (await db.query(`INSERT INTO later_tv VALUES ('${tv_id}', '${filmTitle}', now(),  '${user_id}') RETURNING *`))[0];
+    return (await db.query(`INSERT INTO later_tv VALUES ('${tv_id}', '${title}', now(),  '${user_id}') RETURNING *`))[0];
   }
 
   async removeLaterTV(tv_id, user_id) {
@@ -54,12 +54,12 @@ class TVService {
     return (await db.query(`SELECT id, title, time, rating FROM rated_tv WHERE user_id = '${user_id}' LIMIT ${limit} OFFSET '${offset}'`));
   }
 
-  async addRatedTV(tv_id, rating, user_id, filmTitle) {
+  async addRatedTV(tv_id, rating, user_id, title) {
     const userRating = (await db.query(`SELECT * FROM rated_tv WHERE id = '${tv_id}' AND user_id = '${user_id}'`))[0];
     if(userRating) {
       return (await db.query(`UPDATE rated_tv SET rating = '${rating}' WHERE id = '${tv_id}' AND user_id = '${user_id}' RETURNING *`))[0];
     }
-    return (await db.query(`INSERT INTO rated_tv VALUES ('${tv_id}', '${filmTitle}', now(), '${user_id}', '${rating}') RETURNING *`))[0];
+    return (await db.query(`INSERT INTO rated_tv VALUES ('${tv_id}', '${title}', now(), '${user_id}', '${rating}') RETURNING *`))[0];
   }
 
   async removeRatedTV(tv_id, user_id) {
