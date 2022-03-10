@@ -14,6 +14,6 @@ router.get('/:user_id/rated', TVController.getRatedTVs);
 router.post('/rated/add', TVController.addRatedTV);
 router.post('/rated/remove', TVController.removeRatedTV);
 
-router.get('/info/:film_id/:user_id', TVController.userTV);
+router.get('/info/:tv_id/:user_id', TVController.userTV);
 
 module.exports = router;
