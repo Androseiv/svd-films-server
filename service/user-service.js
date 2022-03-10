@@ -80,14 +80,14 @@ class UserService {
       username: (await db.query(`SELECT username FROM "user" WHERE id = '${user_id}'`))[0].username,
       listsLength: {
         tv: {
-          later:await this.getListLength(user_id, this.LATER_TV),
-          favourite: await this.getListLength(user_id, this.FAVOURITE_TV),
-          rated: await this.getListLength(user_id, this.RATED_TV)
+          later:+await this.getListLength(user_id, this.LATER_TV),
+          favourite: +await this.getListLength(user_id, this.FAVOURITE_TV),
+          rated: +await this.getListLength(user_id, this.RATED_TV)
         },
         movie: {
-          later: await this.getListLength(user_id, this.LATER_MOVIE),
-          favourite: await this.getListLength(user_id, this.FAVOURITE_MOVIE),
-          rated: await this.getListLength(user_id, this.RATED_MOVIE)
+          later: +await this.getListLength(user_id, this.LATER_MOVIE),
+          favourite: +await this.getListLength(user_id, this.FAVOURITE_MOVIE),
+          rated: +await this.getListLength(user_id, this.RATED_MOVIE)
         }
       }
     }
