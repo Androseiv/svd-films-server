@@ -14,8 +14,8 @@ class TVController {
 
   async addFavouriteTV(req, res, next) {
     try {
-      const {tv_id, title, user_id} = req.body;
-      const tv = await TVService.addFavouriteTV(tv_id, user_id, title);
+      const {tv_id, user_id} = req.body;
+      const tv = await TVService.addFavouriteTV(tv_id, user_id);
       return res.json(tv);
     } catch (err) {
       next(err);
